@@ -1,12 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const requireAuth = require('../middlewares/requireAuth');
+
 
 const Service = mongoose.model('Service');
 
 const router = express.Router();
 
-router.use(requireAuth);
 
 router.get('/services', async (req, res) => {
   const services = await Service.find({ userId: req.user._id });

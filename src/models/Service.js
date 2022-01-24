@@ -14,16 +14,14 @@ const serviceSchema = new mongoose.Schema({
     required: true,
   },
   createdAt: {
-    type: String,
+    type: Date,
     required: true,
   },
   cpu: {
     type: Number,
-    default: '',
   },
   memory: {
     type: Number,
-    default: '',
   },
 });
 

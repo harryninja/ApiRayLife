@@ -1,17 +1,19 @@
-require('./models/User');
 require('./models/Service');
+require('./models/Activities');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const authRoutes = require('./routes/authRoutes');
-const cardRoutes = require('./routes/serviceRoutes');
-const requireAuth = require('./middlewares/requireAuth');
+const serviceRoutes = require('./routes/serviceRoutes');
+const activityRoutes = require('./routes/activitiesRoutes');
+const errorHandler = require('./helpers/Error-handler');
 
 const app = express();
 
 app.use(bodyParser.json());
-app.use(authRoutes);
-app.use(cardRoutes);
+app.use(serviceRoutes);
+
+app.use(errorHandler);
+app.use('/users', require('./Users/user.controller'));
 
 const mongoUri =
   'mongodb+srv://harryninja:liferayharry@cluster0.1ucls.mongodb.net/apidata?retryWrites=true&w=majority';
@@ -27,10 +29,7 @@ mongoose.connection.on('error', err => {
   console.error('Error connecting to mongo', err);
 });
 
-app.get('/', requireAuth, (req, res) => {
-  res.send(`Your email: ${req.user.email}`);
-});
-
-app.listen(3000, () => {
-  console.log('Listening on port 3000');
+const port = process.env.NODE_ENV === 'production' ? 80 : 4000;
+const server = app.listen(port, function () {
+    console.log('Server listening on port ' + port);
 });
