@@ -8,11 +8,15 @@ const Role = require('../helpers/Role');
 router.post('/authenticate', authenticate);     // public route
 router.get('/', authorize(Role.Admin), getAll); // admin only
 router.get('/:id', authorize(), getById);       // all authenticated users
-
+router.post('/logout', signout); 
 module.exports = router;
 
 
-
+function signout(req, res, next) {
+   return userService.logout()
+   .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
+   .catch(err => next(err));
+}
 function authenticate(req, res, next) {
     
     userService.authenticate(req.body)

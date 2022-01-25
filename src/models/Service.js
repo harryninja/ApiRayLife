@@ -7,6 +7,7 @@ const serviceSchema = new mongoose.Schema({
   },
   type: {
     type: String,
+    enum : ['Deployment','StatefulSet'],
     required: true,
   },
   createdAt: {

@@ -13,17 +13,34 @@ module.exports = {
     authenticate,
     getAll,
     getById,
+    logout,
     
 };
 
 tokens = [];
 
 
+async function logout(){
+    
+    const tokenized = tokens.length
+    if (tokenized){
+        
+        var things = ['Rock', 'Paper', 'Scissor'];
+        config.secret = things[Math.floor(Math.random()*things.length)];
+        console.log(config.secret);
+        const token = jwt.sign("0921", config.secret);
+        console.log(token);
+        return token
+    
+    }
+}
+
+
 async function authenticate({ username, password }) {
     const user = users.find(u => u.username === username && u.password === password);
     if (user) {
         const token = jwt.sign({ sub: user.id, role: user.role }, config.secret);
-        tokens.push(token);
+        tokens.push({token: token});
         const { password, ...userWithoutPassword } = user;
         return {
             ...userWithoutPassword,

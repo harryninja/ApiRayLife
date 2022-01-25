@@ -10,6 +10,11 @@ const activitySchema = new mongoose.Schema({
     required: true,
   
   },
+  type: {
+    type: String,
+    enum : [SERVICE_CREATED | DEPLOY_STARTED | DEPLOY_SUCCEEDED],
+    required: true,
+  },
 
  
 });
