@@ -1,13 +1,17 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const serviceSchema = new mongoose.Schema({
+  _id: {
+    type: Number,
+    required: true,
+  },
   image: {
     type: String,
     required: true,
   },
   type: {
     type: String,
-    enum : ['Deployment','StatefulSet'],
+    enum: ["Deployment", "StatefulSet"],
     required: true,
   },
   createdAt: {
@@ -22,4 +26,5 @@ const serviceSchema = new mongoose.Schema({
   },
 });
 
-mongoose.model('Service', serviceSchema);
+//model for service
+mongoose.model("Service", serviceSchema);
