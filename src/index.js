@@ -57,19 +57,16 @@ catch (error) {
 const socketIO = require("socket.io");
 io = socketIO(http);
 
-io.on('connection', function(socket) {
-  socket.emit('greeting-from-server', {
-    greeting: 'Hello Client'
-});
-
-socket.on('greeting-from-client', function (message) {
-  console.log(message);
-});
+io.on('connection', socket => {
+  socket.on('create', function(room){
+    socket.join(room)
+  })
+  ;
 });
 
 app.get('/', function(req, res) {
-res.sendFile('../src/index.html')
+console.log('Hello to get the token please authenticate through users/authenticate')
  
 });
 
-global.io = io;
+app.set('io', io)

@@ -12,7 +12,8 @@ const router = express.Router();
 //on this route it creates a new service and also create the activity with the creation of the service
 router.post("/services", authorize(Role.Admin, Role.Contributor), async (req, res) => {
   const { _id, image, type, createdAt, cpu, memory, time } = req.body;
-
+  req.app.get('io')
+  room = "the room"
   if (!image || !type) {
     return res.status(422).send({ error: "Something happened" });
   }
@@ -32,7 +33,7 @@ router.post("/services", authorize(Role.Admin, Role.Contributor), async (req, re
       if (service.cpu > 3 || service.cpu < 1) {
         return res.send({ error: "CPU value is wrong" });
       } else {
-        io.emit('news', { hello: 'world' });
+        io.to(room).emit('message', service);
         await service.save();
         const activity = new Activity({
           time,
@@ -42,6 +43,7 @@ router.post("/services", authorize(Role.Admin, Role.Contributor), async (req, re
         activity.time = Date.now();
         await activity.save();
       }
+     
       res.send(service);
 
       try {
@@ -112,8 +114,9 @@ router.post("/servicesdeploy/:id",authorize(Role.Admin), async (req, res) => {
   const service = await Service.findByIdAndUpdate({
     _id: req.params.id,
   });
+  room = "the room"
   const services = await deploy.DeploymentLibrary.deploy(service);
-  io.emit('news', { hello: 'world' });
+  io.to(room).emit('message', service);
   res.send(services);
   setTimeout(() => {
     const services = deploy.DeploymentLibrary.getDeploymentStatus(req.body._id);
