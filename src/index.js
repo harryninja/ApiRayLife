@@ -11,6 +11,7 @@ const activityRoutes = require('./routes/activitiesRoutes');
 const errorHandler = require('./helpers/Error-handler');
 const logger = require('./config/winston');
 const http = require('http').Server(app);
+fs = require('fs'),
 
 // all the app use
 app.use(cors());
@@ -45,7 +46,7 @@ http.listen(port, function() {
   console.log('listening on ' + port);
  
 try {
-    logger.info('Server and Database is initiated');
+    logger.info('Server and Database are initiated');
 }
 catch (error) {
     logger.error(error);
@@ -53,18 +54,22 @@ catch (error) {
 });
 
 // implementation of io
-const io = require("socket.io")(http);
+const socketIO = require("socket.io");
+io = socketIO(http);
 
 io.on('connection', function(socket) {
-  console.log('A user connected');
-
-  socket.on('disconnect', function () {
-     console.log('A user disconnected');
-  });
+  socket.emit('greeting-from-server', {
+    greeting: 'Hello Client'
 });
+
+socket.on('greeting-from-client', function (message) {
+  console.log(message);
+});
+});
+
 app.get('/', function(req, res) {
-  res.send(console.log('hey', io))
+res.sendFile('../src/index.html')
  
 });
 
-module.exports = io;
+global.io = io;
